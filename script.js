@@ -59,66 +59,8 @@ const animateOnScroll = function() {
     });
 };
 
-// Set initial state for animated elements
-document.addEventListener('DOMContentLoaded', function() {
-    const elements = document.querySelectorAll('.experience-item, .project-item, .education-item, .certification-item');
-    
-    elements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'all 0.5s ease';
-    });
-    
-    // Trigger animation for elements in view on page load
-    animateOnScroll();
-
-    // Setup project detail buttons
-    setupProjectButtons();
-
-    // Add typing animation to hero content
-    addTypingAnimation();
-    
-    // Uncomment the next line to enable profile photo
-    // enableProfilePhoto();
-});
-
 // Trigger animation on scroll
 window.addEventListener('scroll', animateOnScroll);
-
-// Form submission
-if (contactForm) {
-    contactForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        
-        // Get form values
-        const name = document.getElementById('name').value;
-        const email = document.getElementById('email').value;
-        const subject = document.getElementById('subject').value;
-        const message = document.getElementById('message').value;
-        
-        // Validate form
-        if (!name || !email || !subject || !message) {
-            showFormMessage('Please fill in all fields', 'error');
-            return;
-        }
-        
-        // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(email)) {
-            showFormMessage('Please enter a valid email address', 'error');
-            return;
-        }
-        
-        // Here you would typically send the form data to a server
-        // For this demo, we'll just show a success message
-        
-        // Clear the form
-        contactForm.reset();
-        
-        // Show success message
-        showFormMessage('Thanks for your message! I\'ll get back to you soon.', 'success');
-    });
-}
 
 // Show form message
 function showFormMessage(message, type) {
@@ -135,9 +77,16 @@ function showFormMessage(message, type) {
     
     if (type === 'error') {
         messageElement.style.color = '#e74c3c';
+        messageElement.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
     } else {
         messageElement.style.color = '#2ecc71';
+        messageElement.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
     }
+    
+    messageElement.style.padding = '10px';
+    messageElement.style.borderRadius = '5px';
+    messageElement.style.marginTop = '15px';
+    messageElement.style.textAlign = 'center';
     
     // Add message to form
     contactForm.appendChild(messageElement);
@@ -187,14 +136,17 @@ function setupProjectButtons() {
     
     projectButtons.forEach(button => {
         button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Get project details
-            const projectItem = this.closest('.project-item');
-            const projectTitle = projectItem.querySelector('.project-title h3').textContent;
-            
-            // Create modal or redirect to project details page
-            alert(`Details for: ${projectTitle}\n\nProject details page coming soon!`);
+            // Keep the default behavior for links with actual URLs
+            if (this.getAttribute('href') === '#') {
+                e.preventDefault();
+                
+                // Get project details
+                const projectItem = this.closest('.project-item');
+                const projectTitle = projectItem.querySelector('.project-title h3').textContent;
+                
+                // Create modal or redirect to project details page
+                alert(`Details for: ${projectTitle}\n\nProject details page coming soon!`);
+            }
         });
     });
 }
@@ -243,13 +195,108 @@ function addTypingAnimation() {
     }
 }
 
-// Make download CV button functional
-const downloadCvButton = document.querySelector('a[href="resume.pdf"]');
-if (downloadCvButton) {
-    downloadCvButton.addEventListener('click', function(e) {
-        e.preventDefault();
-        
-        // Alert that this would download your CV in a real implementation
-        alert('This button would download your CV. In a real implementation, create a PDF version of your CV and link it here.');
+// SINGLE DOMContentLoaded event handler
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize EmailJS 
+    emailjs.init("Zw1Y5j4eAPfmJ_oFT");
+    
+    // Set initial state for animated elements
+    const elements = document.querySelectorAll('.experience-item, .project-item, .education-item, .certification-item');
+    
+    elements.forEach(element => {
+        element.style.opacity = '0';
+        element.style.transform = 'translateY(20px)';
+        element.style.transition = 'all 0.5s ease';
     });
-}
+    
+    // Trigger animation for elements in view on page load
+    animateOnScroll();
+
+    // Setup project detail buttons
+    setupProjectButtons();
+
+    // Add typing animation to hero content
+    addTypingAnimation();
+    
+    // Uncomment the next line to enable profile photo
+    // enableProfilePhoto();
+    
+    // Set up the contact form - ONLY ONE handler
+    if (contactForm) {
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Show loading state
+            const submitButton = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitButton.textContent;
+            submitButton.textContent = "Sending...";
+            submitButton.disabled = true;
+            
+            // Get form values for validation
+            const name = document.getElementById('name').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const subject = document.getElementById('subject').value.trim();
+            const message = document.getElementById('message').value.trim();
+            
+            // Add detailed console logs to debug
+            console.log('Form fields:', { name, email, subject, message });
+            
+            // Check if any required field is empty
+            if (!name || !email || !subject || !message) {
+                // Identify which fields are empty
+                const emptyFields = [];
+                if (!name) emptyFields.push('Name');
+                if (!email) emptyFields.push('Email');
+                if (!subject) emptyFields.push('Subject');
+                if (!message) emptyFields.push('Message');
+                
+                console.log('Empty fields:', emptyFields);
+                showFormMessage(`Please fill in the following fields: ${emptyFields.join(', ')}`, 'error');
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                return;
+            }
+            
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showFormMessage('Please enter a valid email address', 'error');
+                submitButton.textContent = originalText;
+                submitButton.disabled = false;
+                return;
+            }
+            
+            // Send the email using EmailJS
+            emailjs.sendForm('service_9p2f37j', 'template_wdxhcxc', contactForm)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    
+                    // Clear the form
+                    contactForm.reset();
+                    
+                    // Show success message
+                    showFormMessage('Thanks for your message! I\'ll get back to you soon.', 'success');
+                    
+                    // Reset button
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    
+                    // Show error message
+                    showFormMessage('Sorry, there was a problem sending your message. Please try again.', 'error');
+                    
+                    // Reset button
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
+        });
+    }
+    
+    // Fix CV download button path
+    const downloadCvButton = document.querySelector('a[href="Grace Wambui Resume.pdf"]');
+    if (downloadCvButton) {
+        // No need to add event listener, the download attribute handles it
+        console.log('CV download button found and ready');
+    }
+});
