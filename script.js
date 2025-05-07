@@ -3,7 +3,8 @@ const header = document.getElementById('header');
 const hamburger = document.getElementById('hamburger');
 const nav = document.getElementById('nav');
 const navLinks = document.querySelectorAll('nav ul li a');
-const contactForm = document.getElementById('contactForm');
+// Update this line to target your Netlify form
+const contactForm = document.querySelector('form[name="contact"]');
 const profilePhotoContainer = document.getElementById('profile-photo-container');
 
 // Sticky header
@@ -197,9 +198,6 @@ function addTypingAnimation() {
 
 // SINGLE DOMContentLoaded event handler
 document.addEventListener('DOMContentLoaded', function() {
-    // Initialize EmailJS 
-    emailjs.init("Zw1Y5j4eAPfmJ_oFT");
-    
     // Set initial state for animated elements
     const elements = document.querySelectorAll('.experience-item, .project-item, .education-item, .certification-item');
     
@@ -221,16 +219,10 @@ document.addEventListener('DOMContentLoaded', function() {
     // Uncomment the next line to enable profile photo
     // enableProfilePhoto();
     
-    // Set up the contact form - ONLY ONE handler
+    // Set up the contact form for Netlify
     if (contactForm) {
         contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            // Show loading state
-            const submitButton = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitButton.textContent;
-            submitButton.textContent = "Sending...";
-            submitButton.disabled = true;
+            // Let Netlify handle form submission, but still validate
             
             // Get form values for validation
             const name = document.getElementById('name').value.trim();
@@ -250,46 +242,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (!subject) emptyFields.push('Subject');
                 if (!message) emptyFields.push('Message');
                 
+                e.preventDefault(); // Prevent form submission
                 console.log('Empty fields:', emptyFields);
                 showFormMessage(`Please fill in the following fields: ${emptyFields.join(', ')}`, 'error');
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
                 return;
             }
             
             // Email validation
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
+                e.preventDefault(); // Prevent form submission
                 showFormMessage('Please enter a valid email address', 'error');
-                submitButton.textContent = originalText;
-                submitButton.disabled = false;
                 return;
             }
             
-            // Send the email using EmailJS
-            emailjs.sendForm('service_9p2f37j', 'template_wdxhcxc', contactForm)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    
-                    // Clear the form
-                    contactForm.reset();
-                    
-                    // Show success message
-                    showFormMessage('Thanks for your message! I\'ll get back to you soon.', 'success');
-                    
-                    // Reset button
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    
-                    // Show error message
-                    showFormMessage('Sorry, there was a problem sending your message. Please try again.', 'error');
-                    
-                    // Reset button
-                    submitButton.textContent = originalText;
-                    submitButton.disabled = false;
-                });
+            // If validation passes, show a loading message until page redirects
+            showFormMessage('Sending your message...', 'success');
+            
+            // Note: Netlify will handle the actual form submission and redirect
         });
     }
     
