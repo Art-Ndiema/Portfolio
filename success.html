@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Message Sent - Grace Wambui</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <style>
+        .success-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(160, 92, 123, 0.1), rgba(248, 177, 149, 0.1));
+        }
+        
+        .success-icon {
+            font-size: 5rem;
+            color: #2ecc71;
+            margin-bottom: 2rem;
+        }
+        
+        .success-title {
+            font-size: 2.5rem;
+            color: var(--dark);
+            margin-bottom: 1rem;
+        }
+        
+        .success-message {
+            font-size: 1.2rem;
+            max-width: 600px;
+            margin-bottom: 2rem;
+        }
+        
+        .return-button {
+            display: inline-block;
+            background-color: var(--primary);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            box-shadow: 0 4px 15px rgba(160, 92, 123, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .return-button:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(246, 114, 128, 0.3);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="success-container">
+        <div class="success-icon">
+            <i class="fas fa-check-circle"></i>
+        </div>
+        <h1 class="success-title">Message Sent!</h1>
+        <p class="success-message">Thank you for reaching out. I've received your message and will get back to you as soon as possible.</p>
+        <a href="/" class="return-button">Return to Homepage</a>
+    </div>
+</body>
+</html>

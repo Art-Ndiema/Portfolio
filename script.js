@@ -219,49 +219,40 @@ document.addEventListener('DOMContentLoaded', function() {
     // Uncomment the next line to enable profile photo
     // enableProfilePhoto();
     
-    // Set up the contact form for Netlify
-    if (contactForm) {
-        contactForm.addEventListener('submit', function(e) {
-            // Let Netlify handle form submission, but still validate
+  // Set up the contact form for Netlify
+if (contactForm) {
+    contactForm.addEventListener('submit', function(e) {
+        // Get form values for validation
+        const name = document.getElementById('name').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const subject = document.getElementById('subject').value.trim();
+        const message = document.getElementById('message').value.trim();
+        
+        // Check if any required field is empty
+        if (!name || !email || !subject || !message) {
+            // Identify which fields are empty
+            const emptyFields = [];
+            if (!name) emptyFields.push('Name');
+            if (!email) emptyFields.push('Email');
+            if (!subject) emptyFields.push('Subject');
+            if (!message) emptyFields.push('Message');
             
-            // Get form values for validation
-            const name = document.getElementById('name').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const subject = document.getElementById('subject').value.trim();
-            const message = document.getElementById('message').value.trim();
-            
-            // Add detailed console logs to debug
-            console.log('Form fields:', { name, email, subject, message });
-            
-            // Check if any required field is empty
-            if (!name || !email || !subject || !message) {
-                // Identify which fields are empty
-                const emptyFields = [];
-                if (!name) emptyFields.push('Name');
-                if (!email) emptyFields.push('Email');
-                if (!subject) emptyFields.push('Subject');
-                if (!message) emptyFields.push('Message');
-                
-                e.preventDefault(); // Prevent form submission
-                console.log('Empty fields:', emptyFields);
-                showFormMessage(`Please fill in the following fields: ${emptyFields.join(', ')}`, 'error');
-                return;
-            }
-            
-            // Email validation
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (!emailRegex.test(email)) {
-                e.preventDefault(); // Prevent form submission
-                showFormMessage('Please enter a valid email address', 'error');
-                return;
-            }
-            
-            // If validation passes, show a loading message until page redirects
-            showFormMessage('Sending your message...', 'success');
-            
-            // Note: Netlify will handle the actual form submission and redirect
-        });
-    }
+            e.preventDefault(); // Prevent form submission
+            showFormMessage(`Please fill in the following fields: ${emptyFields.join(', ')}`, 'error');
+            return;
+        }
+        
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            e.preventDefault(); // Prevent form submission
+            showFormMessage('Please enter a valid email address', 'error');
+            return;
+        }
+        
+        // If validation passes, the form will submit naturally and redirect to the success page
+    });
+}
     
     // Fix CV download button path
     const downloadCvButton = document.querySelector('a[href="Grace Wambui Resume.pdf"]');
