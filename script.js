@@ -3,9 +3,110 @@ const header = document.getElementById('header');
 const hamburger = document.getElementById('hamburger');
 const nav = document.getElementById('nav');
 const navLinks = document.querySelectorAll('nav ul li a');
-// Update this line to target your Netlify form
 const contactForm = document.querySelector('form[name="contact"]');
-const profilePhotoContainer = document.getElementById('profile-photo-container');
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const loader = document.getElementById('loader');
+const customCursor = document.getElementById('custom-cursor');
+const cursorDot = document.getElementById('cursor-dot');
+const cursorGlow = document.getElementById('cursor-glow');
+
+// Interactive elements for cursor effects
+const interactiveElements = document.querySelectorAll('a, button, input, textarea, .skill-tag');
+
+// DOM Elements for animations
+const sectionTitles = document.querySelectorAll('.section-title');
+const aboutText = document.querySelector('.about-text');
+const aboutImage = document.querySelector('.about-image');
+const skillTags = document.querySelectorAll('.skill-tag');
+const experienceItems = document.querySelectorAll('.experience-item');
+const projectItems = document.querySelectorAll('.project-item');
+const educationItems = document.querySelectorAll('.education-item');
+const certificationItems = document.querySelectorAll('.certification-item');
+const contactInfo = document.querySelector('.contact-info');
+const contactFormElement = document.querySelector('.contact-form');
+const socialLinks = document.querySelectorAll('.social-link');
+const footerText = document.querySelector('.footer-text');
+
+// Particles array and settings
+let particlesArray = [];
+let grain = [];
+
+// Mouse position
+let mouse = {
+    x: null,
+    y: null,
+    radius: 120,
+    active: false
+};
+
+// Set canvas size
+function resizeCanvas() {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    // Recreate particles when canvas resizes
+    initParticles();
+    initGrain();
+}
+
+window.addEventListener('resize', resizeCanvas);
+
+// Track mouse position
+window.addEventListener('mousemove', function(event) {
+    mouse.x = event.x;
+    mouse.y = event.y;
+    
+    // Update custom cursor position - simplified to just one cursor element
+    if (customCursor) {
+        customCursor.style.left = `${event.clientX}px`;
+        customCursor.style.top = `${event.clientY}px`;
+        customCursor.style.opacity = '1';
+    }
+});
+
+// Mouse events for cursor effects
+window.addEventListener('mousedown', function() {
+    mouse.active = true;
+    if (customCursor) customCursor.classList.add('active');
+});
+
+window.addEventListener('mouseup', function() {
+    mouse.active = false;
+    if (customCursor) customCursor.classList.remove('active');
+});
+
+// Mouse hover events for interactive elements
+interactiveElements.forEach(element => {
+    element.addEventListener('mouseenter', function() {
+        if (customCursor) customCursor.classList.add('hover');
+    });
+    
+    element.addEventListener('mouseleave', function() {
+        if (customCursor) customCursor.classList.remove('hover');
+    });
+});
+
+// Hide cursor when mouse leaves window
+document.addEventListener('mouseleave', function() {
+    if (customCursor) customCursor.style.opacity = '0';
+});
+
+document.addEventListener('mouseenter', function() {
+    if (customCursor) customCursor.style.opacity = '1';
+});
+
+// Page loading animation
+window.addEventListener('load', function() {
+    setTimeout(() => {
+        loader.classList.add('finished');
+        
+        // Trigger initial animations after loader disappears
+        setTimeout(() => {
+            animateOnScroll();
+        }, 500);
+    }, 2500);
+});
 
 // Sticky header
 window.addEventListener('scroll', function() {
@@ -14,6 +115,12 @@ window.addEventListener('scroll', function() {
     } else {
         header.classList.remove('scrolled');
     }
+    
+    // Update active nav link based on scroll position
+    updateActiveNavLink();
+    
+    // Animate elements on scroll
+    animateOnScroll();
 });
 
 // Mobile menu toggle
@@ -45,184 +152,393 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     });
 });
 
+// Update active nav link based on scroll position
+function updateActiveNavLink() {
+    const scrollPosition = window.scrollY;
+    
+    document.querySelectorAll('section').forEach(section => {
+        const sectionTop = section.offsetTop - 100;
+        const sectionBottom = sectionTop + section.offsetHeight;
+        const sectionId = section.getAttribute('id');
+        
+        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${sectionId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+    });
+}
+
 // Animate elements on scroll
-const animateOnScroll = function() {
-    const elements = document.querySelectorAll('.experience-item, .project-item, .education-item, .certification-item');
-    
-    elements.forEach(element => {
-        const elementPosition = element.getBoundingClientRect().top;
-        const screenPosition = window.innerHeight / 1.2;
+function animateOnScroll() {
+    // Animate section titles
+    sectionTitles.forEach(title => {
+        const elementTop = title.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
         
-        if (elementPosition < screenPosition) {
-            element.style.opacity = '1';
-            element.style.transform = 'translateY(0)';
+        if (elementTop < windowHeight - 100) {
+            title.classList.add('visible');
         }
     });
-};
-
-// Trigger animation on scroll
-window.addEventListener('scroll', animateOnScroll);
-
-// Show form message
-function showFormMessage(message, type) {
-    // Remove any existing messages
-    const existingMessage = document.querySelector('.form-message');
-    if (existingMessage) {
-        existingMessage.remove();
-    }
     
-    // Create message element
-    const messageElement = document.createElement('div');
-    messageElement.classList.add('form-message');
-    messageElement.textContent = message;
-    
-    if (type === 'error') {
-        messageElement.style.color = '#e74c3c';
-        messageElement.style.backgroundColor = 'rgba(231, 76, 60, 0.1)';
-    } else {
-        messageElement.style.color = '#2ecc71';
-        messageElement.style.backgroundColor = 'rgba(46, 204, 113, 0.1)';
-    }
-    
-    messageElement.style.padding = '10px';
-    messageElement.style.borderRadius = '5px';
-    messageElement.style.marginTop = '15px';
-    messageElement.style.textAlign = 'center';
-    
-    // Add message to form
-    contactForm.appendChild(messageElement);
-    
-    // Remove message after 5 seconds
-    setTimeout(() => {
-        messageElement.remove();
-    }, 5000);
-}
-
-// Function to enable profile photo
-function enableProfilePhoto() {
-    // Create profile photo container if you decide to use it
-    if (profilePhotoContainer) {
-        profilePhotoContainer.style.display = 'block';
-        profilePhotoContainer.innerHTML = `
-            <div class="profile-photo-placeholder">
-                <div class="photo-icon">
-                    <i class="fas fa-user"></i>
-                </div>
-                <p>Professional headshot or illustration can go here</p>
-            </div>
-        `;
+    // Animate about section
+    if (aboutText && aboutImage) {
+        const aboutTextTop = aboutText.getBoundingClientRect().top;
+        const aboutImageTop = aboutImage.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
         
-        // Style the placeholder
-        const placeholder = profilePhotoContainer.querySelector('.profile-photo-placeholder');
-        placeholder.style.height = '100%';
-        placeholder.style.display = 'flex';
-        placeholder.style.flexDirection = 'column';
-        placeholder.style.alignItems = 'center';
-        placeholder.style.justifyContent = 'center';
-        placeholder.style.backgroundColor = '#f5f5f5';
-        placeholder.style.borderRadius = '10px';
-        placeholder.style.padding = '20px';
-        placeholder.style.textAlign = 'center';
+        if (aboutTextTop < windowHeight - 100) {
+            aboutText.classList.add('visible');
+        }
         
-        const photoIcon = placeholder.querySelector('.photo-icon');
-        photoIcon.style.fontSize = '4rem';
-        photoIcon.style.color = '#ccc';
-        photoIcon.style.marginBottom = '10px';
+        if (aboutImageTop < windowHeight - 100) {
+            aboutImage.classList.add('visible');
+        }
     }
-}
-
-// Setup project detail buttons
-function setupProjectButtons() {
-    const projectButtons = document.querySelectorAll('.project-buttons .btn');
     
-    projectButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            // Keep the default behavior for links with actual URLs
-            if (this.getAttribute('href') === '#') {
-                e.preventDefault();
-                
-                // Get project details
-                const projectItem = this.closest('.project-item');
-                const projectTitle = projectItem.querySelector('.project-title h3').textContent;
-                
-                // Create modal or redirect to project details page
-                alert(`Details for: ${projectTitle}\n\nProject details page coming soon!`);
-            }
-        });
+    // Animate skill tags
+    skillTags.forEach((tag, index) => {
+        const tagTop = tag.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (tagTop < windowHeight - 50) {
+            setTimeout(() => {
+                tag.classList.add('visible');
+            }, 50 * index);
+        }
     });
+    
+    // Animate experience items
+    experienceItems.forEach((item, index) => {
+        const itemTop = item.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (itemTop < windowHeight - 100) {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 100 * index);
+        }
+    });
+    
+    // Animate project items
+    projectItems.forEach((item, index) => {
+        const itemTop = item.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (itemTop < windowHeight - 100) {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 100 * index);
+        }
+    });
+    
+    // Animate education items
+    educationItems.forEach((item, index) => {
+        const itemTop = item.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (itemTop < windowHeight - 100) {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 100 * index);
+        }
+    });
+    
+    // Animate certification items
+    certificationItems.forEach((item, index) => {
+        const itemTop = item.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (itemTop < windowHeight - 100) {
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 100 * index);
+        }
+    });
+    
+    // Animate contact section
+    if (contactInfo && contactFormElement) {
+        const contactInfoTop = contactInfo.getBoundingClientRect().top;
+        const contactFormTop = contactFormElement.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (contactInfoTop < windowHeight - 100) {
+            contactInfo.classList.add('visible');
+        }
+        
+        if (contactFormTop < windowHeight - 100) {
+            contactFormElement.classList.add('visible');
+        }
+    }
+    
+    // Animate footer elements
+    socialLinks.forEach((link, index) => {
+        const linkTop = link.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (linkTop < windowHeight - 50) {
+            setTimeout(() => {
+                link.classList.add('visible');
+            }, 100 * index);
+        }
+    });
+    
+    if (footerText) {
+        const textTop = footerText.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (textTop < windowHeight - 50) {
+            footerText.classList.add('visible');
+        }
+    }
 }
 
-// Typing animation for hero content
-function addTypingAnimation() {
-    const heroTitle = document.querySelector('.hero h1');
-    const heroSubtitle = document.querySelector('.hero h2');
+// Particle class
+class Particle {
+    constructor(x, y) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 4 + 1.5;  // Larger size
+        this.baseX = x;
+        this.baseY = y;
+        this.density = (Math.random() * 30) + 1;
+        this.distance = 0;
+        this.color = this.getRandomColor();
+        this.vel = {
+            x: (Math.random() - 0.5) * 1.2,  // Faster movement
+            y: (Math.random() - 0.5) * 1.2   // Faster movement
+        };
+        this.connectDistance = 180;  // Increased connection distance
+        this.opacity = Math.random() * 0.7 + 0.3;  // Brighter particles
+    }
     
-    if (heroTitle && heroSubtitle) {
-        const titleText = heroTitle.textContent;
-        const subtitleText = heroSubtitle.textContent;
+    getRandomColor() {
+        // Brighter colors
+        const colors = [
+            'rgba(121, 40, 202, 0.9)',
+            'rgba(255, 0, 128, 0.9)',
+            'rgba(0, 112, 243, 0.9)',
+            'rgba(255, 255, 255, 0.5)'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
+    
+    draw() {
+        ctx.fillStyle = this.color.replace(')', `, ${this.opacity})`);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    update() {
+        // Mouse interaction
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
         
-        heroTitle.textContent = '';
-        heroSubtitle.textContent = '';
-        
-        // Create typing animation for title
-        let titleIndex = 0;
-        function typeTitle() {
-            if (titleIndex < titleText.length) {
-                heroTitle.textContent += titleText.charAt(titleIndex);
-                titleIndex++;
-                setTimeout(typeTitle, 100);
+        if (distance < mouse.radius) {
+            const forceDirectionX = dx / distance;
+            const forceDirectionY = dy / distance;
+            const force = (mouse.radius - distance) / mouse.radius;
+            const directionX = forceDirectionX * force * this.density;
+            const directionY = forceDirectionY * force * this.density;
+            
+            if (mouse.active) {
+                // When mouse is pressed, particles are pushed away more strongly
+                this.x -= directionX * 2;
+                this.y -= directionY * 2;
             } else {
-                // Start subtitle animation after title is complete
-                setTimeout(() => {
-                    typeSubtitle();
-                }, 500);
+                this.x -= directionX;
+                this.y -= directionY;
+            }
+            
+            // Increase opacity when mouse is near
+            this.opacity = Math.min(1, this.opacity + 0.05);
+        } else {
+            // Return to original opacity
+            if (this.opacity > 0.2) {
+                this.opacity -= 0.01;
+            }
+            
+            if (this.x !== this.baseX) {
+                const dx = this.x - this.baseX;
+                this.x -= dx / 20;
+            }
+            if (this.y !== this.baseY) {
+                const dy = this.y - this.baseY;
+                this.y -= dy / 20;
             }
         }
         
-        // Create typing animation for subtitle
-        let subtitleIndex = 0;
-        function typeSubtitle() {
-            if (subtitleIndex < subtitleText.length) {
-                heroSubtitle.textContent += subtitleText.charAt(subtitleIndex);
-                subtitleIndex++;
-                setTimeout(typeSubtitle, 50);
-            }
-        }
+        // Gentle movement
+        this.x += this.vel.x;
+        this.y += this.vel.y;
         
-        // Start the typing animations
-        setTimeout(() => {
-            typeTitle();
-        }, 500);
+        // Boundary check
+        if (this.x < 0 || this.x > canvas.width) this.vel.x *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vel.y *= -1;
+        
+        this.draw();
     }
 }
 
-// SINGLE DOMContentLoaded event handler
-document.addEventListener('DOMContentLoaded', function() {
-    // Set initial state for animated elements
-    const elements = document.querySelectorAll('.experience-item, .project-item, .education-item, .certification-item');
+// Grain class - for smaller, more numerous particles
+class Grain {
+    constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 2 + 0.8;  // Larger grain size
+        this.color = this.getRandomColor();
+        this.vel = {
+            x: (Math.random() - 0.5) * 0.8,  // Faster movement
+            y: (Math.random() - 0.5) * 0.8   // Faster movement
+        };
+        this.opacity = Math.random() * 0.6 + 0.2;  // Brighter grains
+        this.baseOpacity = this.opacity;
+    }
     
-    elements.forEach(element => {
-        element.style.opacity = '0';
-        element.style.transform = 'translateY(20px)';
-        element.style.transition = 'all 0.5s ease';
-    });
+    getRandomColor() {
+        // Brighter colors
+        const colors = [
+            'rgba(121, 40, 202, 0.5)',
+            'rgba(255, 0, 128, 0.5)',
+            'rgba(0, 112, 243, 0.5)',
+            'rgba(255, 255, 255, 0.4)'
+        ];
+        return colors[Math.floor(Math.random() * colors.length)];
+    }
     
-    // Trigger animation for elements in view on page load
-    animateOnScroll();
+    draw() {
+        ctx.fillStyle = this.color.replace(')', `, ${this.opacity})`);
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.closePath();
+        ctx.fill();
+    }
+    
+    update() {
+        // Mouse interaction - subtle reaction to mouse
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance < mouse.radius / 2) {
+            // Increase opacity when mouse is near
+            this.opacity = Math.min(1, this.baseOpacity + 0.2);
+            
+            // Slight movement away from cursor
+            const angle = Math.atan2(dy, dx);
+            this.x -= Math.cos(angle) * 0.3;
+            this.y -= Math.sin(angle) * 0.3;
+        } else {
+            // Return to original opacity
+            if (this.opacity > this.baseOpacity) {
+                this.opacity -= 0.01;
+            }
+        }
+        
+        // Gentle movement
+        this.x += this.vel.x;
+        this.y += this.vel.y;
+        
+        // Boundary behavior - wrap around
+        if (this.x < 0) this.x = canvas.width;
+        if (this.x > canvas.width) this.x = 0;
+        if (this.y < 0) this.y = canvas.height;
+        if (this.y > canvas.height) this.y = 0;
+        
+        this.draw();
+    }
+}
 
-    // Setup project detail buttons
-    setupProjectButtons();
+// Initialize particles
+function initParticles() {
+    particlesArray = [];
+    const numberOfParticles = Math.min(Math.floor((canvas.width * canvas.height) / 10000), 150);  // More particles
+    
+    for (let i = 0; i < numberOfParticles; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        particlesArray.push(new Particle(x, y));
+    }
+}
 
-    // Add typing animation to hero content
-    addTypingAnimation();
+// Initialize grain particles
+function initGrain() {
+    grain = [];
+    const numberOfGrains = Math.min(Math.floor((canvas.width * canvas.height) / 1500), 800);  // More grain particles
     
-    // Uncomment the next line to enable profile photo
-    // enableProfilePhoto();
+    for (let i = 0; i < numberOfGrains; i++) {
+        grain.push(new Grain());
+    }
+}
+
+// Connect particles with more visible lines
+function connectParticles() {
+    for (let a = 0; a < particlesArray.length; a++) {
+        for (let b = a + 1; b < particlesArray.length; b++) {
+            const dx = particlesArray[a].x - particlesArray[b].x;
+            const dy = particlesArray[a].y - particlesArray[b].y;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance < particlesArray[a].connectDistance) {
+                const opacity = 1 - (distance / particlesArray[a].connectDistance);
+                
+                // Create gradient line
+                const gradient = ctx.createLinearGradient(
+                    particlesArray[a].x, 
+                    particlesArray[a].y, 
+                    particlesArray[b].x, 
+                    particlesArray[b].y
+                );
+                
+                gradient.addColorStop(0, particlesArray[a].color.replace(/[\d\.]+\)$/, (opacity * 0.7) + ')')); // Brighter lines
+                gradient.addColorStop(1, particlesArray[b].color.replace(/[\d\.]+\)$/, (opacity * 0.7) + ')')); // Brighter lines
+                
+                ctx.strokeStyle = gradient;
+                ctx.lineWidth = 1.2; // Thicker lines
+                ctx.beginPath();
+                ctx.moveTo(particlesArray[a].x, particlesArray[a].y);
+                ctx.lineTo(particlesArray[b].x, particlesArray[b].y);
+                ctx.stroke();
+            }
+        }
+    }
+}
+
+// Animation loop
+function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
     
-  // Set up the contact form for Netlify
+    // Update and draw grain particles
+    for (let i = 0; i < grain.length; i++) {
+        grain[i].update();
+    }
+    
+    // Update and draw main particles
+    for (let i = 0; i < particlesArray.length; i++) {
+        particlesArray[i].update();
+    }
+    
+    // Connect particles with lines
+    connectParticles();
+    
+    requestAnimationFrame(animate);
+}
+
+// Initialize animation
+function initAnimation() {
+    resizeCanvas();
+    animate();
+}
+
+// Set up form validation
 if (contactForm) {
     contactForm.addEventListener('submit', function(e) {
-        // Get form values for validation
         const name = document.getElementById('name').value.trim();
         const email = document.getElementById('email').value.trim();
         const subject = document.getElementById('subject').value.trim();
@@ -230,34 +546,39 @@ if (contactForm) {
         
         // Check if any required field is empty
         if (!name || !email || !subject || !message) {
-            // Identify which fields are empty
-            const emptyFields = [];
-            if (!name) emptyFields.push('Name');
-            if (!email) emptyFields.push('Email');
-            if (!subject) emptyFields.push('Subject');
-            if (!message) emptyFields.push('Message');
-            
-            e.preventDefault(); // Prevent form submission
-            showFormMessage(`Please fill in the following fields: ${emptyFields.join(', ')}`, 'error');
+            e.preventDefault();
+            showFormMessage('Please fill in all required fields', 'error');
             return;
         }
         
         // Email validation
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(email)) {
-            e.preventDefault(); // Prevent form submission
+            e.preventDefault();
             showFormMessage('Please enter a valid email address', 'error');
             return;
         }
-        
-        // If validation passes, the form will submit naturally and redirect to the success page
     });
 }
+
+// Show form message
+function showFormMessage(message, type) {
+    const existingMessage = document.querySelector('.form-message');
+    if (existingMessage) existingMessage.remove();
     
-    // Fix CV download button path
-    const downloadCvButton = document.querySelector('a[href="Grace Wambui Resume.pdf"]');
-    if (downloadCvButton) {
-        // No need to add event listener, the download attribute handles it
-        console.log('CV download button found and ready');
-    }
-});
+    const messageElement = document.createElement('div');
+    messageElement.classList.add('form-message');
+    if (type === 'error') messageElement.classList.add('error');
+    else messageElement.classList.add('success');
+    
+    messageElement.textContent = message;
+    
+    contactForm.appendChild(messageElement);
+    
+    setTimeout(() => {
+        messageElement.remove();
+    }, 5000);
+}
+
+// Initialize everything
+initAnimation();

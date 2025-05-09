@@ -8,21 +8,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="loader-content">
+            <div class="loader-logo">Grace<span>Wambui</span></div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Custom Cursor Element - Simplified -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+    
+    <!-- Interactive Particle Background -->
+    <canvas id="canvas"></canvas>
+    
+    <!-- Hidden Netlify Form -->
     <form name="contact" netlify netlify-honeypot="bot-field" hidden>
         <input type="text" name="name" />
         <input type="email" name="email" />
         <input type="text" name="subject" />
         <textarea name="message"></textarea>
-      </form>     
+    </form>
+    
     <header id="header">
         <div class="container header-content">
             <a href="#" class="logo">Grace<span>Wambui</span></a>
-            <div class="hamburger" id="hamburger">
+            <button class="hamburger" id="hamburger">
                 <i class="fas fa-bars"></i>
-            </div>
+            </button>
             <nav id="nav">
                 <ul>
-                    <li><a href="#home">Home</a></li>
+                    <li><a href="#home" class="active">Home</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#experience">Experience</a></li>
                     <li><a href="#projects">Projects</a></li>
@@ -56,33 +74,31 @@
                     <p>I'm a dedicated professional with expertise in cybersecurity, cloud platforms, and health information systems. My passion lies in solving real problems, securing critical systems, and making meaningful contributions to impactful projects.</p>
                     <p>With experience in OpenMRS development, cloud security implementation, and frontend development, I bring a versatile skill set to the table. I'm particularly interested in the intersection of healthcare and technology, focusing on building secure and efficient systems.</p>
                     <div class="skills">
-                        <span class="skill-tag">Cloud Security</span>
-                        <span class="skill-tag">AWS</span>
-                        <span class="skill-tag">Azure</span>
-                        <span class="skill-tag">OpenMRS</span>
-                        <span class="skill-tag">React.js</span>
-                        <span class="skill-tag">Flutter</span>
-                        <span class="skill-tag">JavaScript</span>
-                        <span class="skill-tag">HTML/CSS</span>
-                        <span class="skill-tag">Git</span>
-                        <span class="skill-tag">Agile</span>
-                        <span class="skill-tag">Data Masking</span>
-                        <span class="skill-tag">Encryption</span>
-                        <span class="skill-tag">Endpoint Protection</span>
-                        <span class="skill-tag">TCP/IP</span>
-                        <span class="skill-tag">Subnetting</span>
-                        <span class="skill-tag">Firewalls</span>
+                        <span class="skill-tag" style="--delay: 0">Cloud Security</span>
+                        <span class="skill-tag" style="--delay: 1">AWS</span>
+                        <span class="skill-tag" style="--delay: 2">Azure</span>
+                        <span class="skill-tag" style="--delay: 3">OpenMRS</span>
+                        <span class="skill-tag" style="--delay: 4">React.js</span>
+                        <span class="skill-tag" style="--delay: 5">Flutter</span>
+                        <span class="skill-tag" style="--delay: 6">JavaScript</span>
+                        <span class="skill-tag" style="--delay: 7">HTML/CSS</span>
+                        <span class="skill-tag" style="--delay: 8">Git</span>
+                        <span class="skill-tag" style="--delay: 9">Agile</span>
+                        <span class="skill-tag" style="--delay: 10">Data Masking</span>
+                        <span class="skill-tag" style="--delay: 11">Encryption</span>
+                        <span class="skill-tag" style="--delay: 12">Endpoint Protection</span>
+                        <span class="skill-tag" style="--delay: 13">TCP/IP</span>
+                        <span class="skill-tag" style="--delay: 14">Subnetting</span>
+                        <span class="skill-tag" style="--delay: 15">Firewalls</span>
+                    </div>
+                    <div class="about-buttons">
+                        <a href="#contact" class="btn btn-primary">Hire Me</a>
+                        <a href="Grace Wambui Resume.pdf" class="btn btn-secondary" download>Download CV</a>
                     </div>
                 </div>
-                <!-- Photo placeholder - optional -->
                 <div class="about-image" id="profile-photo-container">
-                    <!-- This div is styled but hidden by default in CSS -->
-                    <!-- Can be activated in script.js if desired -->
+                    <img src="/api/placeholder/400/500" alt="Grace Wambui" />
                 </div>
-            </div>
-            <div class="about-buttons">
-                <a href="#contact" class="btn btn-primary">Hire Me</a>
-                <a href="Grace Wambui Resume.pdf" class="btn btn-secondary" download>Download CV</a>
             </div>
         </div>
     </section>
@@ -103,10 +119,10 @@
                     </div>
                     <div class="experience-description">
                         <ul>
-                            <li>Improved the functionality of OpenMRS for HIV surveillance and prevention at the University's HIV Prevention and Surveillance Center.</li>
-                            <li>Designed and optimized data collection and reporting modules for better healthcare delivery and decision-making.</li>
-                            <li>Integrated new features into the system while maintaining healthcare data security standards.</li>
-                            <li>Cross-functional collaboration by writing secure code that protects sensitive health data.</li>
+                            <li style="--li-index: 0">Improved the functionality of OpenMRS for HIV surveillance and prevention at the University's HIV Prevention and Surveillance Center.</li>
+                            <li style="--li-index: 1">Designed and optimized data collection and reporting modules for better healthcare delivery and decision-making.</li>
+                            <li style="--li-index: 2">Integrated new features into the system while maintaining healthcare data security standards.</li>
+                            <li style="--li-index: 3">Cross-functional collaboration by writing secure code that protects sensitive health data.</li>
                         </ul>
                     </div>
                 </div>
@@ -121,9 +137,9 @@
                     </div>
                     <div class="experience-description">
                         <ul>
-                            <li>Acquired structured foundational knowledge and skills in cybersecurity through training and hands-on projects.</li>
-                            <li>Collaborated on cybersecurity projects with a class of over 600 African women, showcasing teamwork and problem-solving skills.</li>
-                            <li>Focus on endpoint security, network configuration, and methods of protecting data.</li>
+                            <li style="--li-index: 0">Acquired structured foundational knowledge and skills in cybersecurity through training and hands-on projects.</li>
+                            <li style="--li-index: 1">Collaborated on cybersecurity projects with a class of over 600 African women, showcasing teamwork and problem-solving skills.</li>
+                            <li style="--li-index: 2">Focus on endpoint security, network configuration, and methods of protecting data.</li>
                         </ul>
                     </div>
                 </div>
@@ -138,9 +154,9 @@
                     </div>
                     <div class="experience-description">
                         <ul>
-                            <li>Led workshops on developing secure mobile applications and best practices in cloud security.</li>
-                            <li>Mentored students to develop scalable and secure applications using Flutter and cloud platforms like AWS.</li>
-                            <li>Championed community initiatives to create better opportunities for secure coding and developing innovative solutions.</li>
+                            <li style="--li-index: 0">Led workshops on developing secure mobile applications and best practices in cloud security.</li>
+                            <li style="--li-index: 1">Mentored students to develop scalable and secure applications using Flutter and cloud platforms like AWS.</li>
+                            <li style="--li-index: 2">Championed community initiatives to create better opportunities for secure coding and developing innovative solutions.</li>
                         </ul>
                     </div>
                 </div>
@@ -155,9 +171,9 @@
                     </div>
                     <div class="experience-description">
                         <ul>
-                            <li>Developed interactive and responsive web interfaces using React.js.</li>
-                            <li>Optimized application performance to enhance users' satisfaction and scalability.</li>
-                            <li>Collaborated with designers and back-end developers in the development of end-to-end cohesive, high-quality products.</li>
+                            <li style="--li-index: 0">Developed interactive and responsive web interfaces using React.js.</li>
+                            <li style="--li-index: 1">Optimized application performance to enhance users' satisfaction and scalability.</li>
+                            <li style="--li-index: 2">Collaborated with designers and back-end developers in the development of end-to-end cohesive, high-quality products.</li>
                         </ul>
                     </div>
                 </div>
@@ -172,9 +188,9 @@
                     </div>
                     <div class="experience-description">
                         <ul>
-                            <li>Designed intuitive and visually appealing mobile and web interfaces tailored to user needs.</li>
-                            <li>Assisted with developing a Point-of-Sale application by incorporating user feedback into the development process.</li>
-                            <li>Working alongside developers to ensure design and development are better aligned.</li>
+                            <li style="--li-index: 0">Designed intuitive and visually appealing mobile and web interfaces tailored to user needs.</li>
+                            <li style="--li-index: 1">Assisted with developing a Point-of-Sale application by incorporating user feedback into the development process.</li>
+                            <li style="--li-index: 2">Working alongside developers to ensure design and development are better aligned.</li>
                         </ul>
                     </div>
                 </div>
@@ -194,11 +210,11 @@
                     </div>
                     <div class="project-description">
                         <ul>
-                            <li>Worked with the HIV Prevention and Surveillance Center, University of San Francisco, to extend the functionality of OpenMRS.</li>
-                            <li>Enhanced data collection and reporting while ensuring that set health care data protection standards were met.</li>
+                            <li style="--li-index: 0">Worked with the HIV Prevention and Surveillance Center, University of San Francisco, to extend the functionality of OpenMRS.</li>
+                            <li style="--li-index: 1">Enhanced data collection and reporting while ensuring that set health care data protection standards were met.</li>
                         </ul>
                         <div class="project-buttons">
-                            <a href="https://openmrs.org/" class="btn btn-small btn-secondary">View Details</a>
+                            <a href="https://openmrs.org/" class="btn btn-small btn-secondary" target="_blank">View Details</a>
                         </div>
                     </div>
                 </div>
@@ -209,8 +225,8 @@
                     </div>
                     <div class="project-description">
                         <ul>
-                            <li>Designed and implemented a secure cloud infrastructure using AWS Cloud in a university project.</li>
-                            <li>Applied industry best practices for secure configuration and data protection.</li>
+                            <li style="--li-index: 0">Designed and implemented a secure cloud infrastructure using AWS Cloud in a university project.</li>
+                            <li style="--li-index: 1">Applied industry best practices for secure configuration and data protection.</li>
                         </ul>
                         <div class="project-buttons">
                             <a href="#" class="btn btn-small btn-secondary">View Details</a>
@@ -224,11 +240,11 @@
                     </div>
                     <div class="project-description">
                         <ul>
-                            <li>Radio-frequency identification-based attendance system that was secure, fast, with maintained data integrity and ensured confidentiality.</li>
-                            <li>Implemented encryption and secure authentication mechanisms to protect sensitive information.</li>
+                            <li style="--li-index: 0">Radio-frequency identification-based attendance system that was secure, fast, with maintained data integrity and ensured confidentiality.</li>
+                            <li style="--li-index: 1">Implemented encryption and secure authentication mechanisms to protect sensitive information.</li>
                         </ul>
                         <div class="project-buttons">
-                            <a href="https://github.com/Art-Ndiema/Attendance-System" class="btn btn-small btn-secondary">View Details</a>
+                            <a href="https://github.com/Art-Ndiema/Attendance-System" class="btn btn-small btn-secondary" target="_blank">View Details</a>
                         </div>
                     </div>
                 </div>
@@ -295,13 +311,13 @@
                     <h3>Get In Touch</h3>
                     <p>Feel free to reach out if you're looking for a dedicated cloud security specialist or software developer. I'm open to collaboration, opportunities, and discussions about technology and innovation.</p>
                     <div class="contact-details">
-                        <div class="contact-item">
+                        <div class="contact-item" style="--item-index: 0">
                             <div class="contact-icon">
                                 <i class="fas fa-envelope"></i>
                             </div>
                             <div>art.ndiema@gmail.com</div>
                         </div>
-                        <div class="contact-item">
+                        <div class="contact-item" style="--item-index: 1">
                             <div class="contact-icon">
                                 <i class="fas fa-map-marker-alt"></i>
                             </div>
@@ -310,42 +326,41 @@
                     </div>
                 </div>
                 
-                
-                <form name="contact" method="POST" data-netlify="true" data-netlify-success-url="/success.html">
-                            <div class="form-group">
-                                <label for="name">Name</label>
-                                <input type="text" id="name" name="name" placeholder="Your name" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="email">Email</label>
-                                <input type="email" id="email" name="email" placeholder="Your email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="subject">Subject</label>
-                                <input type="text" id="subject" name="subject" placeholder="Subject" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="message">Message</label>
-                                <textarea id="message" name="message" placeholder="Your message" required></textarea>
-                            </div>
-                            
-                            <input type="hidden" name="form-name" value="contact">
+                <form name="contact" method="POST" data-netlify="true" data-netlify-success-url="/success.html" class="contact-form">
+                    <div class="form-group" style="--group-index: 0">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" name="name" placeholder="Your name" required>
+                    </div>
+                    
+                    <div class="form-group" style="--group-index: 1">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" name="email" placeholder="Your email" required>
+                    </div>
+                    
+                    <div class="form-group" style="--group-index: 2">
+                        <label for="subject">Subject</label>
+                        <input type="text" id="subject" name="subject" placeholder="Subject" required>
+                    </div>
+                    
+                    <div class="form-group" style="--group-index: 3">
+                        <label for="message">Message</label>
+                        <textarea id="message" name="message" placeholder="Your message" required></textarea>
+                    </div>
+                    
+                    <input type="hidden" name="form-name" value="contact">
     
-                            <button type="submit" class="btn btn-primary">Send Message</button>
-                        </form>
-                           </div>
+                    <button type="submit" class="btn btn-primary">Send Message</button>
+                </form>
+            </div>
         </div>
     </section>
 
     <footer>
         <div class="container">
             <div class="social-links">
-                <a href="https://www.linkedin.com/in/grace-wambui-38012a240/" target="_blank" class="social-link"><i class="fab fa-linkedin-in"></i></a>
-                <a href="https://github.com/Art-Ndiema" target="_blank" class="social-link"><i class="fab fa-github"></i></a>
-                <a href="https://x.com/ArtNdiema" target="_blank" class="social-link"><i class="fab fa-twitter"></i></a>
+                <a href="https://www.linkedin.com/in/grace-wambui-38012a240/" target="_blank" class="social-link" style="--link-index: 0"><i class="fab fa-linkedin-in"></i></a>
+                <a href="https://github.com/Art-Ndiema" target="_blank" class="social-link" style="--link-index: 1"><i class="fab fa-github"></i></a>
+                <a href="https://x.com/ArtNdiema" target="_blank" class="social-link" style="--link-index: 2"><i class="fab fa-twitter"></i></a>
             </div>
             <div class="footer-text">
                 <p>&copy; 2025 Grace Wambui. All rights reserved.</p>
@@ -353,7 +368,6 @@
         </div>
     </footer>
 
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
